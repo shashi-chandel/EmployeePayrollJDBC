@@ -12,7 +12,7 @@ import java.util.List;
 import com.capgemini.jdbc.EmployeePayrollData;
 
 public class EmployeePayrollDBService {
-	
+
 	private Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
 		String user = "root";
@@ -23,20 +23,19 @@ public class EmployeePayrollDBService {
 		System.out.println("Connection estabilshed with: " + connection);
 		return connection;
 	}
-	
+
 	public List<EmployeePayrollData> readData() {
 		String sql = "SELECT * FROM employee_payroll; ";
 		List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
-		try {
-			Connection connection = this.getConnection();
+		try (Connection connection = this.getConnection()) {
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
-			while(resultSet.next()) {
+			while (resultSet.next()) {
 				int id = resultSet.getInt("id");
 				String name = resultSet.getString("name");
 				double salary = resultSet.getDouble("salary");
 				LocalDate startDate = resultSet.getDate("start").toLocalDate();
-				employeePayrollList.add(new EmployeePayrollData(id, name, salary,startDate));
+				employeePayrollList.add(new EmployeePayrollData(id, name, salary, startDate));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -44,5 +43,4 @@ public class EmployeePayrollDBService {
 		return employeePayrollList;
 	}
 
-	
 }
