@@ -2,10 +2,8 @@ package com.capgemini.jdbc;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import com.capgemini.jdbc.service.EmployeePayrollService;
 import com.capgemini.jdbc.service.EmployeePayrollService.IOService;
 
@@ -28,5 +26,15 @@ public class EmployeePayrollServiceTest {
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollData(IOService.DB_IO);
 		Assert.assertEquals(3, employeePayrollData.size());
+	}
+
+	@Test
+	public void givenNewSalaryForEmployee_WhenUpdated_ShouldSyncWithDB() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		@SuppressWarnings("unused")
+		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollData(IOService.DB_IO);
+		employeePayrollService.updateEmployeeSalary("Terisa", 3000000.00);
+		boolean result = employeePayrollService.CheckEmployeeInSyncWithDB("Terisa");
+		Assert.assertTrue(result);
 	}
 }

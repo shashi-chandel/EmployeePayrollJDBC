@@ -3,10 +3,10 @@ package com.capgemini.jdbc;
 import java.time.LocalDate;
 
 public class EmployeePayrollData {
-	private int id;
-	private String name;
-	private double salary;
-	private LocalDate startDate;
+	public int id;
+	public String name;
+	public double salary;
+	public LocalDate startDate;
 	
 	public EmployeePayrollData(int id, String name, double salary) {
 		super();
@@ -27,6 +27,7 @@ public class EmployeePayrollData {
 				+ "]";
 	}
 
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -45,12 +46,9 @@ public class EmployeePayrollData {
 			return false;
 		if (Double.doubleToLongBits(salary) != Double.doubleToLongBits(other.salary))
 			return false;
-		if (startDate == null) {
-			if (other.startDate != null)
-				return false;
-		} else if (!startDate.equals(other.startDate))
-			return false;
 		return true;
 	}
+
+	
 
 }

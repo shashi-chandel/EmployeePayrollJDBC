@@ -7,16 +7,19 @@ import java.util.Scanner;
 import com.capgemini.jdbc.EmployeePayrollData;
 
 public class EmployeePayrollService {
+	private List<EmployeePayrollData> employeePayrollList;
+	private EmployeePayrollDBService employeePayrollDBService;
+
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO
 	}
 
-	private List<EmployeePayrollData> employeePayrollList;
-
 	public EmployeePayrollService() {
+		employeePayrollDBService = EmployeePayrollDBService.getInstance();
 	}
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
+		this();
 		this.employeePayrollList = employeePayrollList;
 	}
 
@@ -62,7 +65,28 @@ public class EmployeePayrollService {
 		if (ioService.equals(IOService.FILE_IO))
 			this.employeePayrollList = new EmployeePayrollFileIOService().readData();
 		else if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollList = new EmployeePayrollDBService().readData();
+			this.employeePayrollList = employeePayrollDBService.readData();
 		return employeePayrollList;
+	}
+
+	public void updateEmployeeSalary(String name, double salary) {
+		int result = employeePayrollDBService.updateEmployeeData(name, salary);
+		if (result == 0)
+			return;
+		EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
+		if (employeePayrollData != null)
+			employeePayrollData.salary = salary;
+	}
+
+	private EmployeePayrollData getEmployeePayrollData(String name) {
+		EmployeePayrollData employeePayrollData;
+		employeePayrollData = this.employeePayrollList.stream()
+				.filter(employeePayrollDataItem -> employeePayrollDataItem.name.equals(name)).findFirst().orElse(null);
+		return employeePayrollData;
+	}
+
+	public boolean CheckEmployeeInSyncWithDB(String name) {
+		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
+		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
 }
