@@ -4,10 +4,10 @@ import java.time.LocalDate;
 
 public class EmployeePayrollData {
 	private int id;
-	private String name;
-	private double salary;
+	public String name;
+	public double salary;
 	private LocalDate startDate;
-	
+
 	public EmployeePayrollData(int id, String name, double salary) {
 		super();
 		this.id = id;
@@ -15,9 +15,8 @@ public class EmployeePayrollData {
 		this.salary = salary;
 	}
 
-	
 	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
-		this(id,name,salary);
+		this(id, name, salary);
 		this.startDate = startDate;
 	}
 
