@@ -37,4 +37,5 @@ public class EmployeePayrollServiceTest {
 		boolean result = employeePayrollService.CheckEmployeeInSyncWithDB("Terisa");
 		Assert.assertTrue(result);
 	}
+	
 }
