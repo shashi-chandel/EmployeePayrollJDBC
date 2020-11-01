@@ -3,6 +3,7 @@ package com.capgemini.jdbc.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.capgemini.jdbc.EmployeePayrollData;
@@ -14,11 +15,17 @@ public class EmployeePayrollService {
 
 	private List<EmployeePayrollData> employeePayrollList;
 	private EmployeePayrollDBService employeePayrollDBService;
-
+	private Map<String, Double> employeePayrollMap;
+	
 	public EmployeePayrollService() {
 		employeePayrollDBService = EmployeePayrollDBService.getInstance();
 	}
 
+	public EmployeePayrollService(Map<String, Double> employeePayrollMap) {
+		this();
+		this.employeePayrollMap = employeePayrollMap;
+	}
+	
 	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
 		this();
 		this.employeePayrollList = employeePayrollList;
@@ -94,8 +101,13 @@ public class EmployeePayrollService {
 	public List<EmployeePayrollData> readPayrollDataForRange(IOService ioService, LocalDate startDate,
 			LocalDate endDate) {
 		if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollList = employeePayrollDBService.readData();
+			this.employeePayrollList = employeePayrollDBService.getEmployeeForDateRange(startDate, endDate);
 		return employeePayrollList;
 	}
 
+	public Map<String, Double> readPayrollDataForAvgSalary(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollMap = employeePayrollDBService.getAverageSalaryByGender();
+		return employeePayrollMap;
+	}
 }

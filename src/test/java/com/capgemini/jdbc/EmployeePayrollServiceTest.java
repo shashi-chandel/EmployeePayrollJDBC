@@ -3,6 +3,7 @@ package com.capgemini.jdbc;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,5 +50,12 @@ public class EmployeePayrollServiceTest {
 		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForRange(IOService.DB_IO,
 				startDate, endDate);
 		Assert.assertEquals(3, employeePayrollData.size());
+	}
+	
+	@Test
+	public void givenEmployeePayrollData_ShouldMatchAverageSalary_GroupByGender() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		Map<String,Double> employeePayrollData = employeePayrollService.readPayrollDataForAvgSalary(IOService.DB_IO);
+		Assert.assertEquals(2, employeePayrollData.size());
 	}
 }
