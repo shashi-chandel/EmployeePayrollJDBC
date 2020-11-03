@@ -35,6 +35,7 @@ public class EmployeePayrollServiceTest {
 	@Test
 	public void givenNewSalaryForEmployee_WhenUpdated_ShouldMatch() {
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		@SuppressWarnings("unused")
 		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollData(IOService.DB_IO);
 		employeePayrollService.updateEmployeeSalary("Terisa", 3000000.00);
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
@@ -54,6 +55,13 @@ public class EmployeePayrollServiceTest {
 	
 	@Test
 	public void givenEmployeePayrollData_ShouldMatchAverageSalary_GroupByGender() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		Map<String,Double> employeePayrollData = employeePayrollService.readPayrollDataForAvgSalary(IOService.DB_IO);
+		Assert.assertEquals(2, employeePayrollData.size());
+	}
+	
+	@Test       
+	public void givenEmployeePayrollData_ShouldMatchAverageSalary_GroupByGender_() {
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 		Map<String,Double> employeePayrollData = employeePayrollService.readPayrollDataForAvgSalary(IOService.DB_IO);
 		Assert.assertEquals(2, employeePayrollData.size());

@@ -9,26 +9,27 @@ import java.util.Scanner;
 import com.capgemini.jdbc.EmployeePayrollData;
 
 public class EmployeePayrollService {
+	private List<EmployeePayrollData> employeePayrollList;
+	private Map<String, Double> employeePayrollMap;
+
+	private EmployeePayrollDBService employeePayrollDBService;
+
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO
 	}
 
-	private List<EmployeePayrollData> employeePayrollList;
-	private EmployeePayrollDBService employeePayrollDBService;
-	private Map<String, Double> employeePayrollMap;
-	
 	public EmployeePayrollService() {
 		employeePayrollDBService = EmployeePayrollDBService.getInstance();
+	}
+
+	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
+		this();
+		this.employeePayrollList = employeePayrollList;
 	}
 
 	public EmployeePayrollService(Map<String, Double> employeePayrollMap) {
 		this();
 		this.employeePayrollMap = employeePayrollMap;
-	}
-	
-	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
-		this();
-		this.employeePayrollList = employeePayrollList;
 	}
 
 	public static void main(String[] args) {

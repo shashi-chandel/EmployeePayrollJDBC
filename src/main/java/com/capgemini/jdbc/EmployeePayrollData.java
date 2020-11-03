@@ -26,8 +26,6 @@ public class EmployeePayrollData {
 		this.gender = gender;
 	}
 
-	
-
 	@Override
 	public String toString() {
 		return "EmployeePayrollData [id=" + id + ", name=" + name + ", salary=" + salary + ", startDate=" + startDate
