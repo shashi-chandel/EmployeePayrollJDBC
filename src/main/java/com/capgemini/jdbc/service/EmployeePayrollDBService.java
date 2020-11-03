@@ -165,6 +165,7 @@ public class EmployeePayrollDBService {
 		EmployeePayrollData employeePayrollData = null;
 		try {
 			connection = this.getConnection();
+			connection.setAutoCommit(false);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -180,6 +181,12 @@ public class EmployeePayrollDBService {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+			return employeePayrollData;
 		}
 
 		try (Statement statement = connection.createStatement()) {
@@ -194,6 +201,17 @@ public class EmployeePayrollDBService {
 			if (rowAffected == 1) {
 				employeePayrollData = new EmployeePayrollData(employeeId, name, salary, startDate);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException ex) {
+				ex.printStackTrace();
+			}
+			return employeePayrollData;
+		}
+		try {
+			connection.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
