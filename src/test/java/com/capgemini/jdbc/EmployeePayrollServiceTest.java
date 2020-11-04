@@ -24,17 +24,7 @@ public class EmployeePayrollServiceTest {
 		long entries = employeePayrollService.countEntries(IOService.FILE_IO);
 		Assert.assertEquals(3, entries);
 	}
-
-	@Test
-	public void givenDateRange_WhenRetrieved_ShouldMatchEmployeeCount() {
-		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-		employeePayrollService.readPayrollData(IOService.DB_IO);
-		LocalDate startDate = LocalDate.of(2018, 01, 01);
-		LocalDate endDate = LocalDate.now();
-		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForRange(IOService.DB_IO,
-				startDate, endDate);
-		Assert.assertEquals(4, employeePayrollData.size());
-	}
+	
 	
 	@Test
 	public void givenEmployeePayrollData_ShouldMatchAverageSalary_GroupByGender() {
@@ -58,4 +48,16 @@ public class EmployeePayrollServiceTest {
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Terisa");
 		Assert.assertTrue(result);
 	}
+	
+	@Test
+	public void givenDateRangeForEmployeeInNormalised_WhenRetrieved_ShouldMatchEmployeeCount() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		employeePayrollService.readPayrollData(IOService.DB_IO);
+		LocalDate startDate = LocalDate.of(2001, 01, 01);
+		LocalDate endDate = LocalDate.now();
+		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForRange(IOService.DB_IO,
+				startDate, endDate);
+		Assert.assertEquals(2, employeePayrollData.size());
+	}
+
 }
