@@ -12,7 +12,7 @@ import com.capgemini.jdbc.EmployeePayrollServiceJDBCException.ExceptionType;
 
 public class EmployeePayrollServiceJDBC {
 	private static final Logger log = LogManager.getLogger(EmployeePayrollServiceJDBC.class);
-	
+
 	public static void main(String[] args) throws EmployeePayrollServiceJDBCException {
 		EmployeePayrollServiceJDBC employeePayrollService = new EmployeePayrollServiceJDBC();
 		employeePayrollService.establishConnection();
@@ -32,7 +32,8 @@ public class EmployeePayrollServiceJDBC {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			log.info("Driver found!");
 		} catch (ClassNotFoundException e) {
-			throw new EmployeePayrollServiceJDBCException("Cannot find the JDBC Driver!!", ExceptionType.CANNOT_LOAD_DRIVER);
+			throw new EmployeePayrollServiceJDBCException("Cannot find the JDBC Driver!!",
+					ExceptionType.CANNOT_LOAD_DRIVER);
 		}
 		listDrivers();
 		try {
@@ -47,7 +48,7 @@ public class EmployeePayrollServiceJDBC {
 
 	private void listDrivers() {
 		Enumeration<Driver> driverList = DriverManager.getDrivers();
-		while (driverList.hasMoreElements()) { 
+		while (driverList.hasMoreElements()) {
 			Driver driverClass = driverList.nextElement();
 			log.info("Driver: " + driverClass.getClass().getName());
 		}

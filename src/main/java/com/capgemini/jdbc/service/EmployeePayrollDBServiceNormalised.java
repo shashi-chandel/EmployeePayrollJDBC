@@ -93,13 +93,13 @@ public class EmployeePayrollDBServiceNormalised {
 		try {
 			Connection connection = this.getConnection();
 			String sql = "SELECT e.id, e.employee_name, e.gender, e.comp_id, c.comp_name,e.start,dept_name, p.basic_pay from employee e left join payroll p ON p.emp_id = e.id left join company c ON c.comp_id = e.comp_id where e.employee_name=?;";
-			
+
 			employeePayrollDataStatementNormalised = connection.prepareStatement(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public List<EmployeePayrollData> getEmployeeForDateRange(LocalDate startDate, LocalDate endDate) {
 		String sql = String.format(
 				"SELECT e.id, e.employee_name, e.gender, e.comp_id, c.comp_name, e.start, p.basic_pay FROM employee e left join payroll p ON p.emp_id = e.id left join company c ON c.comp_id = e.comp_id WHERE e.start BETWEEN CAST('2011-01-01' AS DATE) AND DATE(NOW());",
@@ -155,7 +155,9 @@ public class EmployeePayrollDBServiceNormalised {
 			e.printStackTrace();
 		}
 		return genderToAverageSalaryMap;
-	}public EmployeePayrollData addEmployeeToPayroll(String name, String gender, int company_id, String company_name,
+	}
+
+	public EmployeePayrollData addEmployeeToPayroll(String name, String gender, int company_id, String company_name,
 			double salary, LocalDate startDate) {
 		int employeeId = -1;
 		Connection connection = null;
@@ -262,8 +264,44 @@ public class EmployeePayrollDBServiceNormalised {
 		return employeePayrollData;
 	}
 
-	
-	
+	public List<EmployeePayrollData> getActiveEmployees() {
+		String sql = "select * from employee_payroll2 where is_active=1;";
+		return this.getEmployeePayrollDataUsingDBActive(sql);
+	}
+
+	private List<EmployeePayrollData> getEmployeePayrollDataNormalisedActive(ResultSet resultSet) {
+		List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+		try {
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				int companyId = resultSet.getInt("company_Id");
+				String name = resultSet.getString("name");
+				String gender = resultSet.getString("gender");
+				LocalDate startDate = resultSet.getDate("start").toLocalDate();
+				String companyName = resultSet.getString("company_name");
+				double salary = resultSet.getDouble("salary");
+				boolean is_active = resultSet.getBoolean("is_active");
+				employeePayrollList.add(new EmployeePayrollData(id, name, gender, salary, startDate, companyName,
+						companyId, is_active));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
+	}
+
+	private List<EmployeePayrollData> getEmployeePayrollDataUsingDBActive(String sql) {
+		ResultSet resultSet;
+		List<EmployeePayrollData> employeePayrollList = null;
+		try (Connection connection = this.getConnection();) {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			resultSet = prepareStatement.executeQuery(sql);
+			employeePayrollList = this.getEmployeePayrollDataNormalisedActive(resultSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return employeePayrollList;
+	}
 
 	private Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
@@ -281,8 +319,8 @@ public class EmployeePayrollDBServiceNormalised {
 	}
 
 	private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
-		String sql = String.format("UPDATE payroll SET basic_pay = %.2f WHERE emp_id = "
-				+ "(SELECT id from employee WHERE employee_name = '%s');", salary, name);
+		String sql = String.format("UPDATE payroll_details2 SET basic_pay = %.2f WHERE employee_id = "
+				+ "(SELECT id from employee WHERE name = '%s');", salary, name);
 		try (Connection connection = this.getConnection();) {
 			PreparedStatement prepareStatement = connection.prepareStatement(sql);
 			return prepareStatement.executeUpdate(sql);

@@ -89,7 +89,8 @@ public class EmployeePayrollService {
 	}
 
 	public boolean checkEmployeePayrollInSyncWithDB(String name) {
-		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised.getEmployeePayrollData(name);
+		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised
+				.getEmployeePayrollData(name);
 		System.out.println("check");
 		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
@@ -114,10 +115,16 @@ public class EmployeePayrollService {
 		return employeePayrollMap;
 	}
 
+	public List<EmployeePayrollData> readPayrollDataForActiveEmployees(IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.employeePayrollList = employeePayrollDBServiceNormalised.getActiveEmployees();
+		return employeePayrollList;
+	}
+
 	public void addEmployeeToPayroll(String name, double salary, LocalDate startDate, String gender) {
 		employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(name, salary, startDate, gender));
 	}
-	
+
 	public void addEmployeeToPayrollNormalised(String name, String gender, int company_id, String company_name,
 			double salary, LocalDate startDate) {
 		employeePayrollList.add(employeePayrollDBServiceNormalised.addEmployeeToPayroll(name, gender, company_id,

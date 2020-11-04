@@ -13,6 +13,7 @@ public class EmployeePayrollData {
 	public String department[];
 	public int departmentId;
 	public String departmentName;
+	public boolean is_active;
 
 	public EmployeePayrollData(int id, String name, double salary) {
 		super();
@@ -20,7 +21,7 @@ public class EmployeePayrollData {
 		this.name = name;
 		this.salary = salary;
 	}
-	
+
 	public EmployeePayrollData(int departmentId, String departmentName) {
 		this.departmentId = departmentId;
 		this.departmentName = departmentName;
@@ -32,12 +33,12 @@ public class EmployeePayrollData {
 		this.id = id;
 
 	}
-	
+
 	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
 		this(id, name, salary);
 		this.startDate = startDate;
 	}
-	
+
 	public EmployeePayrollData(int id, String name, String gender, double salary, LocalDate startDate) {
 		this(id, name, salary, startDate);
 		this.gender = gender;
@@ -50,7 +51,7 @@ public class EmployeePayrollData {
 		this.companyId = companyId;
 		this.department = department;
 	}
-	
+
 	public EmployeePayrollData(int id, String name, String gender, double salary, LocalDate startDate,
 			String companyName, int companyId) {
 		this(id, name, gender, salary, startDate);
@@ -68,7 +69,13 @@ public class EmployeePayrollData {
 		this.salary = salary;
 		this.startDate = startDate;
 	}
-	
+
+	public EmployeePayrollData(int id, String name, String gender, double salary, LocalDate startDate,
+			String companyName, int companyId, boolean is_active) {
+		this(id, name, gender, salary, startDate, companyName, companyId);
+		this.is_active = is_active;
+	}
+
 	public String[] getDepartment() {
 		return department;
 	}
@@ -84,7 +91,7 @@ public class EmployeePayrollData {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "EmployeePayrollData [id=" + id + ", name=" + name + ", salary=" + salary + ", startDate=" + startDate
@@ -116,6 +123,7 @@ public class EmployeePayrollData {
 			return false;
 		return true;
 	}
+
 	public void printDepartments() {
 		String departments[] = this.getDepartment();
 		for (String s : departments) {
