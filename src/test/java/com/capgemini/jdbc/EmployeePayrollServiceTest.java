@@ -59,5 +59,15 @@ public class EmployeePayrollServiceTest {
 				startDate, endDate);
 		Assert.assertEquals(2, employeePayrollData.size());
 	}
+	
+	@Test
+	public void givenNewEmployeeInNormalised_WhenAdded_ShouldSyncWithDB() {
+		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+		employeePayrollService.readPayrollData(IOService.DB_IO);
+		employeePayrollService.addEmployeeToPayrollNormalised("Markus", "M", 5, "Capgemini", 1500000.00,
+				LocalDate.now());
+		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Markus");
+		Assert.assertTrue(result);
+	}
 
 }
