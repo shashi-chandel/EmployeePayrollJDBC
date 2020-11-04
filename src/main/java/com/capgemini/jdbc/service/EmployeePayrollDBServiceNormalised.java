@@ -26,7 +26,7 @@ public class EmployeePayrollDBServiceNormalised {
 	}
 
 	public List<EmployeePayrollData> readData() {
-		String sql ="SELECT e.id, e.employee_name, e.start, e.gender, e.comp_id, c.comp_name, p.dept_name, p.basic_pay from employee e left join  payroll p ON p.emp_id = e.id left join company c ON c.comp_id = e.comp_id;";
+		String sql = "SELECT e.id, e.employee_name, e.start, e.gender, e.comp_id, c.comp_name, p.dept_name, p.basic_pay from employee e left join  payroll p ON p.emp_id = e.id left join company c ON c.comp_id = e.comp_id;";
 		return this.getEmployeePayrollDataUsingSQLQuery(sql);
 	}
 
@@ -88,10 +88,8 @@ public class EmployeePayrollDBServiceNormalised {
 	private void preparedStatementForEmployeeData() {
 		try {
 			Connection connection = this.getConnection();
-			String sql = "SELECT e.id, e.employee_name, e.gender, e.comp_id, c.comp_name p.basic_pay from employee e\r\n"
-					+ "left join  payroll p ON p.emp_id = e.id\r\n"
-					+ "left join company c ON c.comp_id = e.comp_id;";
-
+			String sql = "SELECT e.id, e.employee_name, e.gender, e.comp_id, c.comp_name,e.start,dept_name, p.basic_pay from employee e left join payroll p ON p.emp_id = e.id left join company c ON c.comp_id = e.comp_id where e.employee_name=?;";
+			
 			employeePayrollDataStatementNormalised = connection.prepareStatement(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -107,6 +105,22 @@ public class EmployeePayrollDBServiceNormalised {
 		connection = DriverManager.getConnection(jdbcURL, user, password);
 		System.out.println("Connection estabilshed with: " + connection);
 		return connection;
+	}
+
+	public int updateEmployeeData(String name, Double salary) {
+		return this.updateEmployeeDataUsingPreparedStatement(name, salary);
+	}
+
+	private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
+		String sql = String.format("UPDATE payroll SET basic_pay = %.2f WHERE emp_id = "
+				+ "(SELECT id from employee WHERE employee_name = '%s');", salary, name);
+		try (Connection connection = this.getConnection();) {
+			PreparedStatement prepareStatement = connection.prepareStatement(sql);
+			return prepareStatement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return 0;
 	}
 
 }

@@ -90,6 +90,7 @@ public class EmployeePayrollService {
 
 	public boolean checkEmployeePayrollInSyncWithDB(String name) {
 		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised.getEmployeePayrollData(name);
+		System.out.println("check");
 		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
 
