@@ -13,6 +13,7 @@ public class EmployeePayrollService {
 	private Map<String, Double> employeePayrollMap;
 
 	private EmployeePayrollDBService employeePayrollDBService;
+	private EmployeePayrollDBServiceNormalised employeePayrollDBServiceNormalised;
 
 	public enum IOService {
 		CONSOLE_IO, FILE_IO, DB_IO
@@ -20,6 +21,7 @@ public class EmployeePayrollService {
 
 	public EmployeePayrollService() {
 		employeePayrollDBService = EmployeePayrollDBService.getInstance();
+		employeePayrollDBServiceNormalised = EmployeePayrollDBServiceNormalised.getInstance();
 	}
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
@@ -47,7 +49,6 @@ public class EmployeePayrollService {
 		String name = consoleInputReader.next();
 		System.out.println("Enter the employee's salary : ");
 		double salary = consoleInputReader.nextDouble();
-
 		employeePayrollList.add(new EmployeePayrollData(id, name, salary));
 	}
 
@@ -74,12 +75,12 @@ public class EmployeePayrollService {
 		if (ioService.equals(IOService.FILE_IO))
 			this.employeePayrollList = new EmployeePayrollFileIOService().readData();
 		else if (ioService.equals(IOService.DB_IO))
-			this.employeePayrollList = employeePayrollDBService.readData();
+			this.employeePayrollList = employeePayrollDBServiceNormalised.readData();
 		return employeePayrollList;
 	}
 
 	public void updateEmployeeSalary(String name, double salary) {
-		int result = employeePayrollDBService.updateEmployeeData(name, salary);
+		int result = employeePayrollDBServiceNormalised.updateEmployeeData(name, salary);
 		if (result == 0)
 			return;
 		EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
@@ -88,7 +89,7 @@ public class EmployeePayrollService {
 	}
 
 	public boolean checkEmployeePayrollInSyncWithDB(String name) {
-		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBService.getEmployeePayrollData(name);
+		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised.getEmployeePayrollData(name);
 		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
 
