@@ -1,6 +1,7 @@
 package com.capgemini.jdbc;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class EmployeePayrollData {
 	private int id;
@@ -98,6 +99,28 @@ public class EmployeePayrollData {
 				+ ", gender=" + gender + "]";
 	}
 
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + companyId;
+		result = prime * result + ((companyName == null) ? 0 : companyName.hashCode());
+		result = prime * result + Arrays.hashCode(department);
+		result = prime * result + departmentId;
+		result = prime * result + ((departmentName == null) ? 0 : departmentName.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + id;
+		result = prime * result + (is_active ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(salary);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		return result;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -107,7 +130,30 @@ public class EmployeePayrollData {
 		if (getClass() != obj.getClass())
 			return false;
 		EmployeePayrollData other = (EmployeePayrollData) obj;
+		if (companyId != other.companyId)
+			return false;
+		if (companyName == null) {
+			if (other.companyName != null)
+				return false;
+		} else if (!companyName.equals(other.companyName))
+			return false;
+		if (!Arrays.equals(department, other.department))
+			return false;
+		if (departmentId != other.departmentId)
+			return false;
+		if (departmentName == null) {
+			if (other.departmentName != null)
+				return false;
+		} else if (!departmentName.equals(other.departmentName))
+			return false;
+		if (gender == null) {
+			if (other.gender != null)
+				return false;
+		} else if (!gender.equals(other.gender))
+			return false;
 		if (id != other.id)
+			return false;
+		if (is_active != other.is_active)
 			return false;
 		if (name == null) {
 			if (other.name != null)

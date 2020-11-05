@@ -2,6 +2,7 @@ package com.capgemini.jdbc.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -91,10 +92,7 @@ public class EmployeePayrollService {
 	public boolean checkEmployeePayrollInSyncWithDB(String name) {
 		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised
 				.getEmployeePayrollData(name);
-		System.out.println("check");
-		System.out.println("here");
 		System.out.println(getEmployeePayrollData(name));
-		System.out.println("here");
 		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
 
@@ -134,12 +132,36 @@ public class EmployeePayrollService {
 				company_name, salary, startDate));
 	}
 	
-	public void addEmployeeToPayroll(List<EmployeePayrollData> employeePayrollDataList){
-		employeePayrollDataList.forEach(employeePayrollData ->{
-			System.out.println("Employee being added : "+employeePayrollData.name);
-			this.addEmployeeToPayroll(employeePayrollData.name,employeePayrollData.gender, employeePayrollData.salary, employeePayrollData.startDate);
-			System.out.println("Employee added : "+employeePayrollData.name);
+	public void addEmployeeToPayroll(List<EmployeePayrollData> employeePayrollDataList) {
+		employeePayrollDataList.forEach(employeePayrollData -> {
+			System.out.println("Employee being added : " + employeePayrollData.name);
+			this.addEmployeeToPayroll(employeePayrollData.name, employeePayrollData.gender, employeePayrollData.salary,
+					employeePayrollData.startDate);
+			System.out.println("Employee added : " + employeePayrollData.name);
 		});
-		System.out.println(""+this.employeePayrollList);
+		System.out.println("" + this.employeePayrollList);
+	}
+
+	public void addEmployeeToPayrollWithThreads(List<EmployeePayrollData> employeePayrollDataList) {
+		Map<Integer, Boolean> employeeAdditionStatus = new HashMap<>();
+		employeePayrollDataList.forEach(employeePayrollData -> {
+			Runnable task = () -> {
+				employeeAdditionStatus.put(employeePayrollData.hashCode(), false);
+				System.out.println("Employee being added : " + Thread.currentThread().getName());
+				this.addEmployeeToPayroll(employeePayrollData.name, employeePayrollData.gender,
+						employeePayrollData.salary, employeePayrollData.startDate);
+				employeeAdditionStatus.put(employeePayrollData.hashCode(), true);
+				System.out.println("Employee added : " + Thread.currentThread().getName());
+			};
+			Thread thread = new Thread(task, employeePayrollData.name);
+			thread.start();
+		});
+		while (employeeAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
+		System.out.println("" + this.employeePayrollList);
 	}
 }
