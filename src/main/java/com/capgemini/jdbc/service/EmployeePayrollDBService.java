@@ -16,9 +16,10 @@ import java.util.Map;
 import com.capgemini.jdbc.EmployeePayrollData;
 
 public class EmployeePayrollDBService {
-
+	
 	private static EmployeePayrollDBService employeePayrollDBService;
 	private PreparedStatement employeePayrollDataStatement;
+	private int connectionCounter = 0;
 
 	private EmployeePayrollDBService() {
 
@@ -30,14 +31,14 @@ public class EmployeePayrollDBService {
 		return employeePayrollDBService;
 	}
 
-	private Connection getConnection() throws SQLException {
+	private synchronized Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
 		String user = "root";
 		String password = "Shashi@123";
 		Connection connection;
-		System.out.println("\nConnecting to database: " + jdbcURL);
+		System.out.println("Processing Thread : " + Thread.currentThread().getName() + "Connecting to database: " + jdbcURL);
 		connection = DriverManager.getConnection(jdbcURL, user, password);
-		System.out.println("Connection estabilshed with: " + connection);
+		System.out.println("Processing Thread : " + Thread.currentThread().getName() + " ID : " + connectionCounter + " Connection is successful! " + connection);
 		return connection;
 	}
 
