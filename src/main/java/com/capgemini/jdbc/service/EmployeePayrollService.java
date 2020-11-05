@@ -68,7 +68,7 @@ public class EmployeePayrollService {
 	public long countEntries(IOService ioService) {
 		if (ioService.equals(IOService.FILE_IO))
 			return new EmployeePayrollFileIOService().countEntries();
-		return 0;
+		return employeePayrollList.size();
 	}
 
 	public List<EmployeePayrollData> readPayrollData(IOService ioService) {
@@ -92,6 +92,9 @@ public class EmployeePayrollService {
 		List<EmployeePayrollData> employeePayrollDataList = employeePayrollDBServiceNormalised
 				.getEmployeePayrollData(name);
 		System.out.println("check");
+		System.out.println("here");
+		System.out.println(getEmployeePayrollData(name));
+		System.out.println("here");
 		return employeePayrollDataList.get(0).equals(getEmployeePayrollData(name));
 	}
 
@@ -121,13 +124,22 @@ public class EmployeePayrollService {
 		return employeePayrollList;
 	}
 
-	public void addEmployeeToPayroll(String name, double salary, LocalDate startDate, String gender) {
-		employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(name, salary, startDate, gender));
+	public void addEmployeeToPayroll(String name, String gender, double salary, LocalDate startDate) {
+		employeePayrollList.add(employeePayrollDBService.addEmployeeToPayroll(name, gender, salary, startDate));
 	}
 
 	public void addEmployeeToPayrollNormalised(String name, String gender, int company_id, String company_name,
 			double salary, LocalDate startDate) {
 		employeePayrollList.add(employeePayrollDBServiceNormalised.addEmployeeToPayroll(name, gender, company_id,
 				company_name, salary, startDate));
+	}
+	
+	public void addEmployeeToPayroll(List<EmployeePayrollData> employeePayrollDataList){
+		employeePayrollDataList.forEach(employeePayrollData ->{
+			System.out.println("Employee being added : "+employeePayrollData.name);
+			this.addEmployeeToPayroll(employeePayrollData.name,employeePayrollData.gender, employeePayrollData.salary, employeePayrollData.startDate);
+			System.out.println("Employee added : "+employeePayrollData.name);
+		});
+		System.out.println(""+this.employeePayrollList);
 	}
 }

@@ -6,7 +6,7 @@ public class EmployeePayrollData {
 	private int id;
 	public String name;
 	public double salary;
-	private LocalDate startDate;
+	public LocalDate startDate;
 	public String gender;
 	public String companyName;
 	public int companyId;

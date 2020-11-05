@@ -171,7 +171,7 @@ public class EmployeePayrollDBServiceNormalised {
 
 		try (Statement statement = connection.createStatement()) {
 			String sql = String.format(
-					"INSERT INTO employee_payroll2(name,gender,company_Id,company_name,salary,start) VALUES ('%s','%s','%s','%s','%s','%s');",
+					"INSERT INTO employee_payroll2(name,gender,company_Id,company_name,salary,start) VALUES ('%s','%s','%d','%s','%f','date');",
 					name, gender, company_id, company_name, salary, Date.valueOf(startDate));
 			int rowAffected = statement.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
 			if (rowAffected == 1) {
@@ -320,7 +320,7 @@ public class EmployeePayrollDBServiceNormalised {
 
 	private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
 		String sql = String.format("UPDATE payroll_details2 SET basic_pay = %.2f WHERE employee_id = "
-				+ "(SELECT id from employee WHERE name = '%s');", salary, name);
+				+ "(SELECT id from employee_payroll2 WHERE name = '%s');", salary, name);
 		try (Connection connection = this.getConnection();) {
 			PreparedStatement prepareStatement = connection.prepareStatement(sql);
 			return prepareStatement.executeUpdate(sql);

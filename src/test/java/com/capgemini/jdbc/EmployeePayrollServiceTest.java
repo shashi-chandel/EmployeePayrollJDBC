@@ -1,5 +1,7 @@
 package com.capgemini.jdbc;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -54,25 +56,45 @@ public class EmployeePayrollServiceTest {
 		employeePayrollService.readPayrollData(IOService.DB_IO);
 		LocalDate startDate = LocalDate.of(2001, 01, 01);
 		LocalDate endDate = LocalDate.now();
-		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForRange(IOService.DB_IO, startDate, endDate);
+		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForRange(IOService.DB_IO,
+				startDate, endDate);
 		Assert.assertEquals(2, employeePayrollData.size());
 	}
 
-	@Test
+	/*@Test
 	public void givenNewEmployeeInNormalised_WhenAdded_ShouldSyncWithDB() {
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 		employeePayrollService.readPayrollData(IOService.DB_IO);
-		employeePayrollService.addEmployeeToPayrollNormalised("Markus", "M", 5, "Capgemini", 1500000.00, LocalDate.now());
+		employeePayrollService.addEmployeeToPayrollNormalised("Markus", "M", 5, "Capgemini", 1500000.00,
+				LocalDate.now());
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Markus");
 		Assert.assertTrue(result);
-	}
+	}*/
+
+	/*
+	 * @Test public void givenEmployeePayrollData_ShouldReturn_ActiveEmployees() {
+	 * EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+	 * employeePayrollService.readPayrollData(IOService.DB_IO);
+	 * List<EmployeePayrollData> employeePayrollData =
+	 * employeePayrollService.readPayrollDataForActiveEmployees(IOService.DB_IO);
+	 * Assert.assertEquals(4, employeePayrollData.size()); }
+	 */
 
 	@Test
-	public void givenEmployeePayrollData_ShouldReturn_ActiveEmployees() {
+	public void givenEmployees_WhenAddedToDB_ShouldMatchEmployeeEntries() {
+		EmployeePayrollData[] arrayOfEmployee = { new EmployeePayrollData(0, "Jeff", "M", 100000.0, LocalDate.now()),
+				new EmployeePayrollData(0, "Bill", "M", 200000.0, LocalDate.now()),
+				new EmployeePayrollData(0, "Mahesh", "M", 400000.0, LocalDate.now()),
+				new EmployeePayrollData(0, "Mukesh", "M", 300000.0, LocalDate.now()),
+				new EmployeePayrollData(0, "Sunder", "M", 500000.0, LocalDate.now()),
+				new EmployeePayrollData(0, "Anil", "M", 100000.0, LocalDate.now()) };
 		EmployeePayrollService employeePayrollService = new EmployeePayrollService();
 		employeePayrollService.readPayrollData(IOService.DB_IO);
-		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readPayrollDataForActiveEmployees(IOService.DB_IO);
-		Assert.assertEquals(4, employeePayrollData.size());
+		Instant start = Instant.now();
+		employeePayrollService.addEmployeeToPayroll(Arrays.asList(arrayOfEmployee));
+		Instant end = Instant.now();
+		System.out.println("Duration without thread : " + Duration.between(start, end));
+		Assert.assertEquals(9, employeePayrollService.countEntries(IOService.DB_IO));
 	}
 
 }
