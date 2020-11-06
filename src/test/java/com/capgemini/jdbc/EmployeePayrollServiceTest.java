@@ -77,7 +77,7 @@ public class EmployeePayrollServiceTest {
 		employeePayrollService.addEmployeeToPayrollWithThreads(Arrays.asList(arrayOfEmployee));
 		Instant threadEnd = Instant.now();
 		System.out.println("Duration with Thread : " + Duration.between(threadStart, threadEnd));
-		Assert.assertEquals(15, employeePayrollService.countEntries(IOService.DB_IO));  
+		Assert.assertEquals(15, employeePayrollService.countEntries(IOService.DB_IO));
 	}
 
 	@Test
@@ -95,13 +95,13 @@ public class EmployeePayrollServiceTest {
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Bill");
 		Assert.assertTrue(result);
 	}
-	
+
 	@Before
 	public void setUp() {
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = 3000;
 	}
-	
+
 	public EmployeePayrollData[] getEmployeeList() {
 		Response response = RestAssured.get("/employees");
 		System.out.println("Employee payroll entries in JSON Server :\n" + response.asString());
@@ -127,13 +127,12 @@ public class EmployeePayrollServiceTest {
 		Response response = addEmployeeToJsonServer(employeePayrollData);
 		int statusCode = response.getStatusCode();
 		Assert.assertEquals(201, statusCode);
-
 		employeePayrollData = new Gson().fromJson(response.asString(), EmployeePayrollData.class);
 		employeePayrollService.addEmployeePayroll(employeePayrollData, IOService.REST_IO);
 		long entries = employeePayrollService.countEntries(IOService.REST_IO);
 		Assert.assertEquals(7, entries);
 	}
-	
+
 	@Test
 	public void givenMultipleEmployees_WhenAdded_ShouldMatch() {
 		EmployeePayrollService employeePayrollService;
@@ -153,4 +152,21 @@ public class EmployeePayrollServiceTest {
 		long entries = employeePayrollService.countEntries(IOService.REST_IO);
 		Assert.assertEquals(6, entries);
 	}
+
+	@Test
+	public void givenNewSalaryForEmployee_WhenUpdated_ShouldMatch() {
+		EmployeePayrollService employeePayrollService;
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		employeePayrollService = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		employeePayrollService.updateEmployeeSalary("Anil", 4000000.00, IOService.REST_IO);
+		EmployeePayrollData employeePayrollData = employeePayrollService.getEmployeePayrollData("Anil");
+		String empJson = new Gson().toJson(employeePayrollData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(empJson);
+		Response response = request.put("/employees/" + employeePayrollData.id);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(200, statusCode);
+	}
+
 }
