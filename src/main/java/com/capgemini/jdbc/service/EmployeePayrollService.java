@@ -200,4 +200,11 @@ public class EmployeePayrollService {
 		if (employeePayrollData != null)
 			employeePayrollData.salary = salary;
 	}
+	
+	public void deleteEmployeePayroll(String name, IOService ioService) {
+		if (ioService.equals(IOService.DB_IO)) {
+			EmployeePayrollData employeePayrollData = this.getEmployeePayrollData(name);
+			employeePayrollList.remove(employeePayrollData);
+		}
+	}
 }
