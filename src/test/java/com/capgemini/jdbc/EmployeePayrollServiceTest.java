@@ -169,4 +169,12 @@ public class EmployeePayrollServiceTest {
 		Assert.assertEquals(200, statusCode);
 	}
 
+	@Test
+	public void givenEmployeeDataInJsonServer_WhenRetrived_ShouldMatchCount() {
+		EmployeePayrollData[] arrayOfEmps = getEmployeeList();
+		EmployeePayrollService employeePayrollService;
+		employeePayrollService = new EmployeePayrollService(Arrays.asList(arrayOfEmps));
+		long entries = employeePayrollService.countEntries(IOService.REST_IO);
+		Assert.assertEquals(7, entries);
+	}
 }
