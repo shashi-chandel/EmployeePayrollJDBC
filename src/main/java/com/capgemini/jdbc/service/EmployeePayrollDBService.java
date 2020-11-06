@@ -48,7 +48,7 @@ public class EmployeePayrollDBService {
 	}
 
 	private int updateEmployeeDataUsingPreparedStatement(String name, double salary) {
-		String sql = String.format("update employee_payroll set salary = %.2f where name = '%s';", salary, name);
+		String sql = String.format("update employee_payroll set salary =%.2f where name = '%s';", salary, name);
 		try (Connection connection = this.getConnection()) {
 			PreparedStatement prepareStatement = connection.prepareStatement(sql);
 			return prepareStatement.executeUpdate(sql);

@@ -3,7 +3,7 @@ package com.capgemini.jdbc;
 @SuppressWarnings("serial")
 public class EmployeePayrollServiceJDBCException extends Exception{
 	public enum ExceptionType {
-		WRONG_CREDENTIALS, CANNOT_LOAD_DRIVER;
+		WRONG_CREDENTIALS, CANNOT_LOAD_DRIVER
 	}
 
 	ExceptionType type;
