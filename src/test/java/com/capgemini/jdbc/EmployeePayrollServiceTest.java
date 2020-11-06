@@ -9,10 +9,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.capgemini.jdbc.service.EmployeePayrollService;
 import com.capgemini.jdbc.service.EmployeePayrollService.IOService;
+import com.google.gson.Gson;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public class EmployeePayrollServiceTest {
 
@@ -88,5 +94,43 @@ public class EmployeePayrollServiceTest {
 		System.out.println("Duration with Thread : " + Duration.between(threadStart, threadEnd));
 		boolean result = employeePayrollService.checkEmployeePayrollInSyncWithDB("Bill");
 		Assert.assertTrue(result);
+	}
+	
+	@Before
+	public void setUp() {
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = 3000;
+	}
+	
+	public EmployeePayrollData[] getEmployeeList() {
+		Response response = RestAssured.get("/employees");
+		System.out.println("Employee payroll entries in JSON Server :\n" + response.asString());
+		EmployeePayrollData[] arrayOfEmployees = new Gson().fromJson(response.asString(), EmployeePayrollData[].class);
+		return arrayOfEmployees;
+	}
+
+	public Response addEmployeeToJsonServer(EmployeePayrollData employeePayrollData) {
+		String empJson = new Gson().toJson(employeePayrollData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(empJson);
+		return request.post("/employees");
+	}
+
+	@Test
+	public void givenNewEmployee_WhenAdded_ShouldMatch() {
+		EmployeePayrollService employeePayrollService;
+		EmployeePayrollData[] arrayOfEmployees = getEmployeeList();
+		employeePayrollService = new EmployeePayrollService(Arrays.asList(arrayOfEmployees));
+		EmployeePayrollData employeePayrollData = null;
+		employeePayrollData = new EmployeePayrollData(0, "Manish", "M", 3000000.00, LocalDate.now());
+		Response response = addEmployeeToJsonServer(employeePayrollData);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(201, statusCode);
+
+		employeePayrollData = new Gson().fromJson(response.asString(), EmployeePayrollData.class);
+		employeePayrollService.addEmployeePayroll(employeePayrollData, IOService.REST_IO);
+		long entries = employeePayrollService.countEntries(IOService.REST_IO);
+		Assert.assertEquals(3, entries);
 	}
 }

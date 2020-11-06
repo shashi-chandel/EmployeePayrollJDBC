@@ -1,4 +1,4 @@
-package com.capgemini.jdbc.service;
+  package com.capgemini.jdbc.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class EmployeePayrollService {
 
 	public EmployeePayrollService(List<EmployeePayrollData> employeePayrollList) {
 		this();
-		this.employeePayrollList = employeePayrollList;
+		this.employeePayrollList = new ArrayList<>(employeePayrollList);
 	}
 
 	public EmployeePayrollService(Map<String, Double> employeePayrollMap) {
@@ -78,6 +78,14 @@ public class EmployeePayrollService {
 		else if (ioService.equals(IOService.DB_IO))
 			this.employeePayrollList = employeePayrollDBServiceNormalised.readData();
 		return employeePayrollList;
+	}
+	
+	public void addEmployeePayroll(EmployeePayrollData employeePayrollData, IOService ioService) {
+		if (ioService.equals(IOService.DB_IO))
+			this.addEmployeeToPayroll(employeePayrollData.name, employeePayrollData.gender, employeePayrollData.salary,
+					employeePayrollData.startDate);
+		else
+			employeePayrollList.add(employeePayrollData);
 	}
 
 	public void updateEmployeeSalary(String name, double salary) {
