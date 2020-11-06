@@ -134,9 +134,12 @@ public class EmployeePayrollService {
 	
 	public void addEmployeeToPayroll(List<EmployeePayrollData> employeePayrollDataList) {
 		employeePayrollDataList.forEach(employeePayrollData -> {
+			System.out.println("Employee being added : " + employeePayrollData.name);
 			this.addEmployeeToPayroll(employeePayrollData.name, employeePayrollData.gender, employeePayrollData.salary,
 					employeePayrollData.startDate);
+			System.out.println("Employee added : " + employeePayrollData.name);
 		});
+		System.out.println("" + this.employeePayrollList);
 	}
 
 	public void addEmployeeToPayrollWithThreads(List<EmployeePayrollData> employeePayrollDataList) {
@@ -144,9 +147,11 @@ public class EmployeePayrollService {
 		employeePayrollDataList.forEach(employeePayrollData -> {
 			Runnable task = () -> {
 				employeeAdditionStatus.put(employeePayrollData.hashCode(), false);
+				System.out.println("Employee being added : " + Thread.currentThread().getName());
 				this.addEmployeeToPayroll(employeePayrollData.name, employeePayrollData.gender,
 						employeePayrollData.salary, employeePayrollData.startDate);
 				employeeAdditionStatus.put(employeePayrollData.hashCode(), true);
+				System.out.println("Employee added : " + Thread.currentThread().getName());
 			};
 			Thread thread = new Thread(task, employeePayrollData.name);
 			thread.start();
@@ -157,5 +162,6 @@ public class EmployeePayrollService {
 			} catch (InterruptedException e) {
 			}
 		}
+		System.out.println("" + this.employeePayrollList);
 	}
 }
